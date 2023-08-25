@@ -1,0 +1,213 @@
+{{ header }} {{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="pull-right">
+        <button
+          type="submit"
+          form="form-payment"
+          data-toggle="tooltip"
+          title="{{ text_button_save }}"
+          class="btn btn-primary"
+        ><i class="fa fa-save"></i></button>
+        <a
+          href="{{ cancel }}"
+          data-toggle="tooltip"
+          title="{{ text_button_cancel }}"
+          class="btn btn-default"
+        ><i class="fa fa-reply"></i></a></div>
+      <h1>{{ heading_title }}</h1>
+      <ul class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+      <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title"><i class="fa fa-pencil"></i>{{ text_edit }}</h3>
+      </div>
+      <div class="panel-body">
+        <form
+          action="{{ action }}"
+          method="post"
+          enctype="multipart/form-data"
+          id="form-payment"
+          class="form-horizontal"
+        >
+          <ul class="nav nav-tabs">
+            <li class="active"><a href="#tab-settings" data-toggle="tab">{{ tab_settings }}</a></li>
+            <li><a href="#tab-statuses" data-toggle="tab">{{ tab_statuses }}</a></li>
+          </ul>
+          <div class="tab-content">
+
+            <div class="tab-pane active" id="tab-settings">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-acceptcoin-module-version">{{ text_module_name }}
+                  V- {{ payment_acceptcoin_module_version }}</label>
+                <div class="col-sm-10">
+                  <p>
+                    <a
+                      href="https://acceptcoin.io/login"
+                      data-toggle="tooltip"
+                      title="{{ help_button_create_acc_acceptcoin }}"
+                      class="btn btn-primary pull-right"
+                      target="_blank"
+                      data-original-title="{{ help_button_create_acc_acceptcoin }}"
+                    >{{ help_button_create_acc_acceptcoin }}</a>
+                  </p>
+                </div>
+              </div>
+
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-project-id"><span
+                    data-toggle="tooltip"
+                    title="{{ help_acc_project_id }}"
+                  >{{ text_acc_project_id }}</span></label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    name="payment_acceptcoin_project_id"
+                    value="{{ payment_acceptcoin_project_id }}"
+                    id="input-project-id"
+                    class="form-control"
+                  />
+                  {% if acc_project_id_error %}
+                    <div class="text-danger">{{ acc_project_id_error }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="form-group required">
+                <label class="col-sm-2 control-label" for="input-project-id"><span
+                    data-toggle="tooltip"
+                    title="{{ help_acc_project_secret }}"
+                  >{{ text_acc_project_secret }}</span></label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    name="payment_acceptcoin_project_secret"
+                    value="{{ payment_acceptcoin_project_secret }}"
+                    id="input-project-id"
+                    class="form-control"
+                  />
+                  {% if acc_project_secret_error %}
+                    <div class="text-danger">{{ acc_project_secret_error }}</div>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-status">{{ acc_status }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_acceptcoin_status" id="input-status" class="form-control">
+                    {% if payment_acceptcoin_status %}
+                      <option value="1" selected="selected">{{ text_enabled }}</option>
+                      <option value="0"> {{ text_disabled }}</option>
+                    {% else %}
+                      <option value="1">{{ text_enabled }}</option>
+                      <option value="0" selected="selected">{{ text_disabled }}</option>
+                    {% endif %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-url-success">{{ payment_acceptcoin_redirect_url_success_text }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    name="payment_acceptcoin_redirect_url_success"
+                    value="{{ payment_acceptcoin_redirect_url_success }}"
+                    id="input-url-success"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-url-fail">{{ payment_acceptcoin_redirect_url_fail_text }}</label>
+                <div class="col-sm-10">
+                  <input
+                    type="text"
+                    name="payment_acceptcoin_redirect_url_fail"
+                    value="{{ payment_acceptcoin_redirect_url_fail }}"
+                    id="input-url-fail"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+
+            </div>
+
+            <div class="tab-pane" id="tab-statuses">
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-order-status-pending">{{ order_status_pending_text }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_acceptcoin_order_status_pending" id="input-order-status-pending" class="form-control">
+                    {% for order_status in order_statuses %}
+                      {% if order_status.order_status_id == payment_acceptcoin_order_status_pending %}
+                        <option
+                          value="{{ order_status.order_status_id }}"
+                          selected="selected"
+                        >{{ order_status.name }}</option>
+                      {% else %}
+                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-order-status-processed">{{ order_status_processed_text }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_acceptcoin_order_status_processed" id="input-order-status-processed" class="form-control">
+                    {% for order_status in order_statuses %}
+                      {% if order_status.order_status_id == payment_acceptcoin_order_status_processed %}
+                        <option
+                          value="{{ order_status.order_status_id }}"
+                          selected="selected"
+                        >{{ order_status.name }}</option>
+                      {% else %}
+                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="col-sm-2 control-label" for="input-order-status-fail">{{ order_status_failed_text }}</label>
+                <div class="col-sm-10">
+                  <select name="payment_acceptcoin_order_status_fail" id="input-order-status-fail" class="form-control">
+                    {% for order_status in order_statuses %}
+                      {% if order_status.order_status_id == payment_acceptcoin_order_status_fail %}
+                        <option
+                          value="{{ order_status.order_status_id }}"
+                          selected="selected"
+                        >{{ order_status.name }}</option>
+                      {% else %}
+                        <option value="{{ order_status.order_status_id }}">{{ order_status.name }}</option>
+                      {% endif %}
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ footer }}
