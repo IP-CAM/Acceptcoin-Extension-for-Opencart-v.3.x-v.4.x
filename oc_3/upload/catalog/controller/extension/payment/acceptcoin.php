@@ -5,6 +5,8 @@ use acceptcoin\ACUtils;
 
 class ControllerExtensionPaymentAcceptCoin extends Controller
 {
+	private const STABLE_CURRENCY = "USD";
+
 	/**
 	 * @return mixed
 	 */
@@ -54,12 +56,19 @@ class ControllerExtensionPaymentAcceptCoin extends Controller
 			return;
 		}
 
+		$amount = (string)$this->currency->convert(
+			$order_info['total'] * $order_info['currency_value'],
+			$order_info['currency_code'],
+			self::STABLE_CURRENCY
+		);
+
 		try {
 			require_once DIR_SYSTEM . 'library/acceptcoin/AcceptCoin.php';
 
 			$iframeLink = AcceptCoin::createPayment(
 				$projectId,
 				$projectSecret,
+				$amount,
 				$order_info,
 				$returnUrlSuccess,
 				$returnUrlFailed
@@ -70,6 +79,19 @@ class ControllerExtensionPaymentAcceptCoin extends Controller
 			$this->model_checkout_order->addOrderHistory(
 				$this->session->data['order_id'],
 				$this->config->get("payment_acceptcoin_order_status_pending")
+			);
+
+			AcceptCoin::sendMessage(
+				$order_info['email'],
+				AcceptCoin::TYPE_NEW, $this->config,
+				[
+					"name"       => $order_info['payment_firstname'],
+					"lastname"   => $order_info['payment_lastname'],
+					"vendorName" => $this->config->get('config_name'),
+					"amount"     => $order_info['total'] * $order_info['currency_value'],
+					"currency"   => $order_info['currency_code'],
+					"link"       => $iframeLink
+				]
 			);
 		} catch (Throwable $exception) {
 			$data['error'] = $exception->getMessage();
@@ -141,11 +163,10 @@ class ControllerExtensionPaymentAcceptCoin extends Controller
 				$responseStatus = "fail";
 
 				$emailContent = [
-					"name"        => $order_info['payment_firstname'],
-					"lastname"    => $order_info['payment_lastname'],
-					"referenceId" => $response['data']['referenceId'],
-					"amount"      => $response['data']['amount'],
-					"currency"    => $response['data']['projectPaymentMethods']['paymentMethod']['currency']['asset']
+					"name"          => $order_info['payment_firstname'],
+					"lastname"      => $order_info['payment_lastname'],
+					"transactionId" => $response['data']['id'],
+					"date"          => date("Y-m-d H:i:s", $response['data']['createdAt'])
 				];
 
 				AcceptCoin::sendMessage($order_info['email'], $response['data']['status']['value'], $this->config, $emailContent);
@@ -163,7 +184,11 @@ class ControllerExtensionPaymentAcceptCoin extends Controller
 					$orderId,
 					AcceptCoin::ACCEPTCOIN_PROCESSED_AMOUNT_CODE,
 					AcceptCoin::ACCEPTCOIN_PROCESSED_AMOUNT_TITLE,
-					ACUtils::getProcessedAmount($response['data'])
+					$this->currency->convert(
+						ACUtils::getProcessedAmount($response['data']),
+						self::STABLE_CURRENCY,
+						$order_info['currency_code']
+					) / $order_info['currency_value']
 				);
 			}
 
