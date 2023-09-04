@@ -245,7 +245,7 @@ class AcceptCoin
                                 Want to complete your payment for ' . $vars['amount'] . ' ' . $vars['currency'] . '?
                             </p>
                             <p>
-                                To finish up, go back to payment page or use the button below.
+                                To finish up, go back to '. $vars['vendorName'] .' payment page or use the button below.
                             </p>
 
                             <p style="width:fit-content;margin:0 auto 10px;padding:20px">
