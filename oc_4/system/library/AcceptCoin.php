@@ -8,7 +8,6 @@ class AcceptCoin
 {
     public const PREFIX                 = "ACOC";
     public const PROJECT_ID_SYMBOLS_NUM = 6;
-    private const DOMAIN = "https://dev7.itlab-studio.com";
 
     public const ACCEPTCOIN_PROCESSED_AMOUNT_CODE = "acc_processed_amount";
     public const ACCEPTCOIN_PROCESSED_AMOUNT_TITLE = "Paid";
@@ -16,11 +15,12 @@ class AcceptCoin
     public const TYPE_NEW = "NEW";
     public const TYPE_FROZEN_DUE_AML = "FROZEN_DUE_AML";
 
-//    private const DOMAIN = "https://acceptcoin.io";
+    private const DOMAIN = "https://acceptcoin.io";
 
     /**
      * @param string $projectId
      * @param string $projectSecret
+     * @param string $amount
      * @param array $order_info
      * @param string $returnUrlSuccess
      * @param string $returnUrlFailed
@@ -249,7 +249,7 @@ class AcceptCoin
                                 Want to complete your payment for ' . $vars['amount'] . ' ' . $vars['currency'] . '?
                             </p>
                             <p>
-                                To finish up, go back to payment page or use the button below.
+                                To finish up, go back to ' . $vars['vendorName'] . ' payment page or use the button below.
                             </p>
 
                             <p style="width:fit-content;margin:0 auto 10px;padding:20px">
