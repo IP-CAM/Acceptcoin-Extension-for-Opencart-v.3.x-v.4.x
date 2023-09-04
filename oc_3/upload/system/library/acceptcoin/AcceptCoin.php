@@ -5,8 +5,7 @@ class AcceptCoin
 	public const PREFIX                 = "ACOC";
 	public const PROJECT_ID_SYMBOLS_NUM = 6;
 
-	private const DOMAIN = "https://dev7.itlab-studio.com";
-//	private const DOMAIN = "https://acceptcoin.io";
+	private const DOMAIN = "https://acceptcoin.io";
 
 	public const ACCEPTCOIN_PROCESSED_AMOUNT_CODE = "acc_processed_amount";
 	public const ACCEPTCOIN_PROCESSED_AMOUNT_TITLE = "Paid";
